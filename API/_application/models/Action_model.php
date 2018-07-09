@@ -37,11 +37,13 @@ class Action_model extends F_Model {
 		$this->users_model->Walk($action);
 		return;
 	}
+
+	public function Attack($action){
+
+    }
 	
 	public function Shoot($action)
 	{
-		
-		
-		
+
 	}
 }

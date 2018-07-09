@@ -130,10 +130,10 @@ class Users_model extends F_Model {
 	
 	public function Update()
 	{
-		$view['left']  = $this->users_model->Position()['x'] - $this->users_model->FOV();
-		$view['right'] = $this->users_model->Position()['x'] + $this->users_model->FOV();
-		$view['top']   = $this->users_model->Position()['y'] + $this->users_model->FOV();
-		$view['bottom']= $this->users_model->Position()['y'] - $this->users_model->FOV();
+		$view['left']  = $this->users_model->Position()['x'] + $this->users_model->FOV();
+		$view['right'] = $this->users_model->Position()['x'] - $this->users_model->FOV();
+		$view['top']   = $this->users_model->Position()['y'] - $this->users_model->FOV();
+		$view['bottom']= $this->users_model->Position()['y'] + $this->users_model->FOV();
 		$width=$this->users_model->FOV()*2+1;
 		
 		$query = "SELECT id,x,y,nick   FROM ".$this->table."   WHERE x>=".$view['left']." AND (t_last>".($this->GetTime($this->sessionDuration)).") AND x<=".$view['right']." AND y<=".$view['top']." AND y>=".$view['bottom']."   ORDER BY y ASC, x ASC; ";

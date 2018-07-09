@@ -27,6 +27,6 @@ html, body { margin:0; padding:0; background-color:#FFFFFF; position:absolute; t
 #game table#players td > div { width:47px; height:47px; margin-top:1px; }
 #game table#players td > div > div { width:41px; height:41px; margin-top:3px; }
 #game table#players td > div > div > div { width:35px; height:35px; margin-top:3px; }
-#game table#players td p { position:relative; top:-25px; margin:0; padding:0; }
+#game table#players td p { position:relative; top:-25px; margin:0; padding:0; text-align:center; }
 
 #game div#overlay { position:absolute; top:0; bottom:0; left:0; right:0; z-index:199; }

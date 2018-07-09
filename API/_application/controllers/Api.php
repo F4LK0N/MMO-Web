@@ -112,38 +112,70 @@ class API extends CI_Controller {
 	{
 		//USER - AUTH
 		$this->UserAuthCheck();
-		
-		
-		
-		//INPUT
-		$action="";
-		if($this->input->get('action'))
-			$action = $this->input->get('action');
-		if($this->input->post('action'))
-			$action = $this->input->post('action');
-		
-		
-		//ACCESS
-		if($action){
-			$this->load->model('action_model');
-			$this->action_model->Walk($action);
-			print
-			'{'.
-				'"API":'.'{'.'"v":'.API::$version.'},'.
-				'"User":"ACTION"'.
-			'}';
-			die;
-		}
-		
-		
+
+
+        $didAction = false;
+
+
+
+		//### WALK ###
+		{
+            //INPUT
+            $walk = "";
+            if ($this->input->get('walk'))
+                $walk = $this->input->get('walk');
+            if ($this->input->post('walk'))
+                $walk = $this->input->post('walk');
+
+
+            //ACCESS
+            if ($walk) {
+                $this->load->model('action_model');
+                $this->action_model->Walk($walk);
+                $didAction = true;
+            }
+        }
+
+        //ATTACK
+        {
+            //INPUT
+            $attack = "";
+            if ($this->input->get('attack'))
+                $attack = $this->input->get('attack');
+            if ($this->input->post('attack'))
+                $attack = $this->input->post('attack');
+
+            //ACCESS
+            if ($attack) {
+                $this->load->model('action_model');
+                $this->action_model->Attack($walk);
+                $didAction = true;
+            }
+        }
+
+
+
+        if($didAction){
+            print
+            '{' .
+                '"API":' . '{' . '"v":' . API::$version . '},' .
+                '"User":"ACTION"' .
+            '}';
+            return;
+        }
+
 		//FORM
 		print
 		"<form action='' method='post' enctype='multipart/form-data' style='margin:auto;display:block;width:200px;'>".
 			"Walk: (L,R,U,D)<br>".
-			"Attack: (A) <br>".
-			"<input type='text' name='action' value='U'><br>".
-			"<input type='submit' value='Action'>".
-		"</form>";
+			"<input type='text' name='walk' value='U'><br>".
+			"<input type='submit' value='Walk'>".
+		"</form>".
+        "<form action='' method='post' enctype='multipart/form-data' style='margin:auto;display:block;width:200px;'>".
+            "Attack: (A)<br>".
+            "<input type='text' name='attack' value='A'><br>".
+            "<input type='submit' value='Attack'>".
+        "</form>";
 	}
 	
 	

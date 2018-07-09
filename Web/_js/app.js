@@ -140,7 +140,8 @@ var AUTH = {
 	Init: function(){
 		
 		let $sendButton = $("#login button");
-		$sendButton.on("click", this.Login);
+		$sendButton.on("click", function(ev){ AUTH.Login(); });
+		
 		
 		let $inputField = $("#login input");
 		$inputField.focus();
@@ -152,6 +153,7 @@ var AUTH = {
 		});
 		
 		$("#login").on("click", function(){ $("#login input").focus(); });
+		
 	},
 	
 	Login: function(){
@@ -162,6 +164,12 @@ var AUTH = {
 			alert("Please enter a nick name!");
 			return;
 		}
+		
+		if($nick.length>20){
+			$nick = $nick.substr(0,20);
+		}
+		
+		
 		
 		$('#login').hide();
 		USER.nick = $nick;
@@ -186,9 +194,7 @@ var AUTH = {
 	},
 	
 };
-window.onload = function(){
-	AUTH.Init();
-};
+window.onload = AUTH.Init;
 
 
 
@@ -199,8 +205,7 @@ var GAME = {
 	
 	running: false,
 	callerID: 0,
-	// updateInterval: 250,
-	updateInterval: 10000,
+	updateInterval: 250,
 	lastUpdate: 0,
 	skipedPackages: 0,
 	skipedPackagesTimeout: 20,
@@ -219,14 +224,17 @@ var GAME = {
 		if(window.onresize===null)
 			window.onresize = GAME.PositionElements;
 		
+		ACTIONS.Init();
+		
 		$("#game").show();
 		GAME.UpdateRequest();
 	},
 	
 	End: function(){
 		
-		MAP.end();
-		PLAYERS.end();
+		MAP.End();
+		PLAYERS.End();
+		ACTIONS.End();
 		
 		GAME.running = false;
 		clearInterval(GAME.callerID);
@@ -280,7 +288,7 @@ var GAME = {
 		//PACKAGE TIME ORDER
 		if(!('Time' in response) || GAME.lastUpdate > response.Time){
 			
-			console.log("Package Skiped ("+response.Time+")");
+			console.log("Package Skiped! ("+GAME.skipedPackages+")");
 			GAME.skipedPackages++;
 			
 			//Lost Connection
@@ -337,6 +345,10 @@ var MAP = {
 		}
 	},
 	
+	End: function(){
+	
+	},
+	
 	Update(data){
 		
 		for(let y=0; y<MAP.tilesY; y++){
@@ -381,6 +393,10 @@ var PLAYERS = {
 				tableRow.append(PLAYERS.refArray[y][x]);
 			}
 		}
+	},
+	
+	End: function(){
+	
 	},
 	
 	Update(data){
@@ -431,6 +447,97 @@ var PLAYERS = {
 	GetColorRGB: function(id){
 		let color = PLAYERS.GetColor(id);
 		return "rgb("+ color.r +","+ color.g +", "+ color.b +")";
+	},
+	
+};
+
+
+
+//###############
+//### ACTIONS ###
+//###############
+var ACTIONS = {
+	
+	cooldown: 500,
+	lastAction: 0,
+	
+	actionsList: {},
+	
+	listening: false,
+	listenerID: 0,
+	listenInterval: 50,
+	
+	Init: function(){
+		$(document).on("keydown", ACTIONS.ListenerKeyboard);
+		$("#game #overlay").on("click", ACTIONS.ListenerMouse);
+		ACTIONS.listening = true;
+		ACTIONS.actionsList = {};
+		ACTIONS.lastAction = 0;
+		ACTIONS.listenerID = setInterval(ACTIONS.Loop, ACTIONS.listenInterval);
+	},
+	
+	End: function(){
+		$(document).off("keydown");
+		$("#game #overlay").off("click");
+		ACTIONS.listening = false;
+		clearInterval(ACTIONS.listenerID);
+	},
+	
+	ListenerKeyboard: function(ev){
+	
+		//WALK
+		if(ev.which === 65 || ev.which === 68 || ev.which === 83 || ev.which === 87 || (ev.which>36 && ev.which<41)){
+			
+			//LEFT
+			if(ev.which === 65 || ev.which === 37)
+				ACTIONS.actionsList.walk = "L";
+			
+			//RIGHT
+			else if(ev.which === 68 || ev.which === 39)
+				ACTIONS.actionsList.walk = "R";
+			
+			//UP
+			else if(ev.which === 87 || ev.which === 38)
+				ACTIONS.actionsList.walk = "U";
+			
+			//DOWN
+			else if(ev.which === 83 || ev.which === 40)
+				ACTIONS.actionsList.walk = "D";
+			
+		}
+		
+		//ATTACK
+		else if(ev.which === 32){
+			
+			console.log("Attack");
+			
+			ACTIONS.actionsList.attack = "A";
+		}
+	
+	},
+	
+	ListenerMouse: function(ev){
+		
+		ACTIONS.actionsList.attack = "A";
+	
+	},
+	
+	Loop: function(){
+		
+		if(!ACTIONS.listening)
+			return;
+		
+		//Cooldown
+		if(ACTIONS.lastAction > Date.now()){
+			return;
+		}
+		
+		//Send
+		if('walk' in ACTIONS.actionsList || 'attack' in ACTIONS.actionsList){
+			API.Post("Action/", ACTIONS.actionsList);
+			ACTIONS.actionsList = {};
+			ACTIONS.lastAction = Date.now() + (ACTIONS.cooldown);
+		}
 	},
 	
 };

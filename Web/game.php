@@ -6,5 +6,5 @@
 <div id="game" style="display:none">
     <table id="map"></table>
     <table id="players"></table>
-<!--    <div id="overlay"></div>-->
+    <div id="overlay"></div>
 </div>

@@ -94,6 +94,7 @@ class API extends CI_Controller {
 //			'"User":'.($this->users_model->id)','.
             '"Time":'.(microtime(true)*10000).','.
 		    '"User":{'.
+                '"life":'.$this->users_model->life.','.
                 '"x":'.$this->users_model->Position()['x'].','.
                 '"y":'.$this->users_model->Position()['y'].
             '}';

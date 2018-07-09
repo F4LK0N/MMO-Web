@@ -7,7 +7,8 @@ class Users_model extends F_Model {
 	protected $fields = array(
         "token"      => DBF_TEXT,       //The session identifier.
 		"nick"       => DBF_TEXT255,    //User nick in the game.
-		"x"          => DBF_INT,
+        "life"       => DBF_INT,
+        "x"          => DBF_INT,
 		"y"          => DBF_INT,
 		"t_login"    => DBF_INT_BIG,    //Time login - the timestamp of when the users has logged in.
 		"t_last"     => DBF_INT_BIG,    //Time of the last movement the user have made.
@@ -38,7 +39,7 @@ class Users_model extends F_Model {
 	public function FOV(){ return $this->fov; }
 	
 	public $walkInterval  =  160;//ms
-	public $shootInterval = 1000;//ms
+	public $shootInterval = 2000;//ms
 	
 	//POSITION
 	private $position = array(
@@ -84,6 +85,7 @@ class Users_model extends F_Model {
                 $this->logged  = true;
                 $this->id      = $query->id;
                 $this->nick    = $query->nick;
+                $this->life    = $query->life;
                 $this->t_last  = $query->t_last;
                 $this->t_walk  = $query->t_walk;
                 $this->t_shoot = $query->t_shoot;
@@ -123,6 +125,7 @@ class Users_model extends F_Model {
 			array(
 				'token'      => $token,
 				'nick'       => $nick,
+                'life'       => 100,
 				'x'          => 25,
 				'y'          => 25,
 				't_login'    => $this->GetTime(),
@@ -189,5 +192,13 @@ class Users_model extends F_Model {
 		$this->db->query("UPDATE `".$this->table."`   SET `x`=".$this->position['x'].", `y`=".$this->position['y'].", `t_walk` =".$this->GetTime()."   WHERE (id='".$this->id."'); ");
         $this->db->query("UPDATE `map`   SET `tile` = ".$this->id."   WHERE (`x`=".$this->position['x'].") AND (`y`=".$this->position['y']."); ");
 	}
+
+	public function Attack(){
+
+        //UPDATE
+        $this->db->query("UPDATE `".$this->table."`   SET `t_walk` =".($this->GetTime()+(($this->shootInterval/2)*10))."   WHERE (id='".$this->id."'); ");
+        $this->db->query("UPDATE `map`   SET `tile` = ".$this->id."   WHERE (`x`>".($this->position['x']-2).") AND (`x`<".($this->position['x']+2).") AND (`y`>".($this->position['y']-2).") AND (`y`<".($this->position['y']+2)."); ");
+        $this->db->query("UPDATE `".$this->table."`   SET `life` = 0   WHERE (`x`>".($this->position['x']-2).") AND (`x`<".($this->position['x']+2).") AND (`y`>".($this->position['y']-2).") AND (`y`<".($this->position['y']+2).") AND (id != '".$this->id."'); ");
+    }
 	
 }

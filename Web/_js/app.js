@@ -6,6 +6,8 @@ var USER = {
 	
 	nick: "",
 	
+	life: 100,
+	
 	fov: 5,
 	
 	x: 0,
@@ -16,11 +18,15 @@ var USER = {
 	Update: function(data){
 		USER.nick = data.nick;
 		
+		USER.life = data.life;
+		
 		USER.x = data.x;
 		USER.y = data.y;
 		
 		USER.offsetX = USER.x - USER.fov;
 		USER.offsetY = USER.y - USER.fov;
+		
+		
 	}
 };
 
@@ -301,6 +307,13 @@ var GAME = {
 			return;
 		}
 		
+		//DEAD
+		if(USER.life === 0){
+			GAME.End();
+			alert("You died!");
+			return;
+		}
+		
 		//PACKAGE TIME ORDER
 		if(!('Time' in response) || GAME.lastUpdate > response.Time){
 			
@@ -485,7 +498,7 @@ var ACTIONS = {
 	
 	Init: function(){
 		$(document).on("keydown", ACTIONS.ListenerKeyboard);
-		$("#game #overlay").on("click", ACTIONS.ListenerMouse);
+		// $("#game #overlay").on("click", ACTIONS.ListenerMouse);
 		ACTIONS.listening = true;
 		ACTIONS.actionsList = {};
 		ACTIONS.lastAction = 0;
@@ -494,7 +507,7 @@ var ACTIONS = {
 	
 	End: function(){
 		$(document).off("keydown");
-		$("#game #overlay").off("click");
+		// $("#game #overlay").off("click");
 		ACTIONS.listening = false;
 		clearInterval(ACTIONS.listenerID);
 	},

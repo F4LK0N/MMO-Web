@@ -20,16 +20,10 @@ class Action_model extends F_Model {
 		
 		
 		//Action - Cooldown
-        var_dump($last);
-        var_dump($interval);
-        var_dump($last+$interval);
-        var_dump($this->users_model->GetTime());
-		if($last+$interval > $this->users_model->GetTime())
+        if($last+$interval > $this->users_model->GetTime())
 			return;
 
 
-		var_dump("allowed");
-//		die;
 		//Action - Allowed
 		$this->load->model('map_model');
 		
@@ -47,6 +41,17 @@ class Action_model extends F_Model {
 	}
 
 	public function Attack($action){
+
+        $interval = $this->users_model->shootInterval * 10;
+        $last     = $this->users_model->t_shoot;
+
+
+        //Action - Cooldown
+        if($last+$interval > $this->users_model->GetTime())
+            return;
+
+        //Action - Allowed
+        $this->users_model->Attack();
 
     }
 	

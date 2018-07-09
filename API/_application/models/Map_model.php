@@ -74,9 +74,27 @@ class Map_model extends F_Model {
     }
    
     public function CanWalk($direction){
-        //$this->load->model('users_model');
-       
-        return true;
+
+        $this->load->model('users_model');
+
+        $x = $this->users_model->Position()['x'];
+        $y = $this->users_model->Position()['y'];
+
+
+        if($direction==="R")
+            $x++;
+        else if($direction==="L")
+            $x--;
+        else if($direction==="U")
+            $y--;
+        else if($direction==="D")
+            $y++;
+
+
+        if($x<0 || $x>$this->mapWidth || $y<0 || $y>$this->mapHeight)
+            return false;
+        else
+            return true;
     }
    
 }

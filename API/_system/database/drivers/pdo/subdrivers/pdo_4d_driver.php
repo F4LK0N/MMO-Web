@@ -151,7 +151,7 @@ class CI_DB_pdo_4d_driver extends CI_DB_pdo_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update statement
+	 * UpdateRequest statement
 	 *
 	 * Generates a platform-specific update string from the supplied data
 	 *

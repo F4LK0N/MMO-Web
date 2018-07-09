@@ -1,8 +1,22 @@
-html, body { margin:0; padding:0; }
+html, body { margin:0; padding:0; background-color:#FFFFFF; position:absolute; top:0; bottom:0; left:0; right:0; }
 
 /* LOGIN */
-#login { background-color:rgba(1,1,1, 0.25); position:absolute; top:0; bottom:0; left:0; right:0; text-align:center; }
+#login { background-color:rgba(1,1,1, 0.25); position:absolute; top:0; bottom:0; left:0; right:0; text-align:center; z-index:200; }
 #login label { border:1px solid red; }
 #login label { display:inline-block; padding:20px; border-radius:15px; margin-top:200px; border:2px solid #777; background-color:#999; }
 #login label input { display:inline-block; margin:0; border-bottom-left-radius:15px; border-top-left-radius:15px; font-size:30px; padding:3px 0 3px 10px; }
 #login label button { display:inline-block; margin:0; border-bottom-right-radius:15px; border-top-right-radius:15px; font-size:30px; padding:3px 20px; }
+
+
+
+/* GAME */
+#game { background-color:rgba(1,1,1, 0.75); position:absolute; top:0; bottom:0; left:0; right:0; text-align:center; z-index:100; }
+#game table { border:2px solid #777;  position:absolute; top:0; left:0; }
+#game table { width:550px; height:550px; border-collapse:collapse; display:inline-block; }
+#game table td { width:50px; height:50px; }
+
+#game table#map { z-index:101; }
+#game table#map td { border:2px solid red; background-color:#FFF; }
+
+#game table#players { border:2px solid green; }
+#game table#players { z-index:102; }

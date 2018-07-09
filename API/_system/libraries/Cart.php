@@ -274,7 +274,7 @@ class CI_Cart {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update the cart
+	 * UpdateRequest the cart
 	 *
 	 * This function permits the quantity of a given item to be changed.
 	 * Typically it is called from the "view cart" page if a user makes
@@ -331,7 +331,7 @@ class CI_Cart {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update the cart
+	 * UpdateRequest the cart
 	 *
 	 * This function permits changing item properties.
 	 * Typically it is called from the "view cart" page if a user makes

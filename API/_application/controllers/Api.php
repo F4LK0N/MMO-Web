@@ -88,9 +88,10 @@ class API extends CI_Controller {
 		
 		print
 		'{'.
-			'"API":'.'{'.'"v":'.API::$version.'},'.
-			'"User":"'.($this->users_model->id).'"';
-			
+//			'"API":'.'{'.'"v":'.API::$version.'},'.
+//			'"User":'.($this->users_model->id)','.
+            '"Time":'.(microtime(true)*10000);
+
 			//MAP
 			$this->load->model('map_model');
 			$this->map_model->Update();

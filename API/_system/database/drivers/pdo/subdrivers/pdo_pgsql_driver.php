@@ -294,7 +294,7 @@ class CI_DB_pdo_pgsql_driver extends CI_DB_pdo_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update statement
+	 * UpdateRequest statement
 	 *
 	 * Generates a platform-specific update string from the supplied data
 	 *
@@ -317,7 +317,7 @@ class CI_DB_pdo_pgsql_driver extends CI_DB_pdo_driver {
 	 * Generates a platform-specific batch update string from the supplied data
 	 *
 	 * @param	string	$table	Table name
-	 * @param	array	$values	Update data
+	 * @param	array	$values	UpdateRequest data
 	 * @param	string	$index	WHERE key
 	 * @return	string
 	 */

@@ -644,7 +644,7 @@ class CI_Output {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update/serve cached output
+	 * UpdateRequest/serve cached output
 	 *
 	 * @uses	CI_Config
 	 * @uses	CI_URI

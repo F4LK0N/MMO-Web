@@ -83,7 +83,7 @@ class Users_model extends F_Model {
 			$this->position['x'] = $query->x;
 			$this->position['y'] = $query->y;
 			
-			//Update Last
+			//UpdateRequest Last
 			$this->db->query("UPDATE `".$this->table."`   SET `t_last` =".$this->GetTime()."   WHERE (id='".$this->id."'); ");
 		}
 	}

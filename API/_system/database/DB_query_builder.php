@@ -1851,7 +1851,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Validate Update
+	 * Validate UpdateRequest
 	 *
 	 * This method is used by both update() and get_compiled_update() to
 	 * validate that data is actually being set and that a table has been
@@ -1952,7 +1952,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	 * Generates a platform-specific batch update string from the supplied data
 	 *
 	 * @param	string	$table	Table name
-	 * @param	array	$values	Update data
+	 * @param	array	$values	UpdateRequest data
 	 * @param	string	$index	WHERE key
 	 * @return	string
 	 */

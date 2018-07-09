@@ -720,7 +720,7 @@ class CI_Javascript {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update
+	 * UpdateRequest
 	 *
 	 * Outputs a javascript library slideDown event
 	 *

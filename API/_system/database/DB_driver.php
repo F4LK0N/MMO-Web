@@ -1510,7 +1510,7 @@ abstract class CI_DB_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Update statement
+	 * UpdateRequest statement
 	 *
 	 * Generates a platform-specific update string from the supplied data
 	 *

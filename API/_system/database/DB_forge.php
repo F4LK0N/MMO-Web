@@ -464,7 +464,7 @@ abstract class CI_DB_forge {
 
 		$query = $this->db->query($query);
 
-		// Update table list cache
+		// UpdateRequest table list cache
 		if ($query && ! empty($this->db->data_cache['table_names']))
 		{
 			$key = array_search(strtolower($this->db->dbprefix.$table_name), array_map('strtolower', $this->db->data_cache['table_names']), TRUE);

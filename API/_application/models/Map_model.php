@@ -55,14 +55,14 @@ class Map_model extends F_Model {
 		$i=0;
         $json=
         ','.
-        '"map":{'.
+        '"Map":{'.
             '"'.$y.'":{';
             foreach($query as $tile){
                 if($i>=$width){ $json.='},"'.++$y.'":{';  $i=0; }
-                $i++;
-               
+
                 $json.='"'.($i).'":'.$tile->tile;
-               
+                $i++;
+
                 if($i!=$width)
                     $json.=',';
             }

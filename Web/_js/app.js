@@ -2,6 +2,8 @@
 //### USER ###
 //############
 var USER = {
+	token: "",
+	
 	nick: "",
 	
 	fov: 5,
@@ -12,6 +14,8 @@ var USER = {
 	offsetY: 0,
 	
 	Update: function(data){
+		USER.nick = data.nick;
+		
 		USER.x = data.x;
 		USER.y = data.y;
 		
@@ -69,10 +73,15 @@ var API = {
 			data: false,
 		};
 		
+		//HEADER
+		var header = {};
+		if (USER.token!=="") header.AuthToken = USER.token;
+		
 		//CONNECT
 		$.ajax({
 			url: this.URL + url + "?time=" + Date.now(),
 			method: 'GET',
+			headers: header,
 			timeout: 500,
 			success: function (data) {
 				response.connected = true;
@@ -102,10 +111,15 @@ var API = {
 			data: false,
 		};
 		
+		//HEADER
+		var header = {};
+		if (USER.token!=="") header.AuthToken = USER.token;
+		
 		//CONNECT
 		$.ajax({
 			url: this.URL + url + "?time=" + Date.now(),
 			method: 'POST',
+			headers: header,
 			dataType: 'json',
 			data: data,
 			timeout: 500,
@@ -178,7 +192,9 @@ var AUTH = {
 	
 	LoginCallback: function(response){
 	
-		if('User' in response && response.User==="LOGGED"){
+		if('User' in response && 'Token' in response.User){
+			USER.token = response.User.Token;
+			console.log(USER);
 			GAME.Init();
 		}
 		
@@ -208,7 +224,7 @@ var GAME = {
 	updateInterval: 250,
 	lastUpdate: 0,
 	skipedPackages: 0,
-	skipedPackagesTimeout: 20,
+	skipedPackagesTimeout: 15,
 	
 	Init: function(){
 		
@@ -293,7 +309,7 @@ var GAME = {
 			
 			//Lost Connection
 			if(GAME.skipedPackages > GAME.skipedPackagesTimeout){
-				alert("Server connection lost!");
+				alert("Server Connection Lost!");
 				GAME.End();
 			}
 			return;
@@ -353,15 +369,15 @@ var MAP = {
 		
 		for(let y=0; y<MAP.tilesY; y++){
 			
-			let dataRow = data[0];
+			let dataRow = data[y];
 			for(let x=0; x<MAP.tilesX; x++){
 				
 				let dataCel = dataRow[x];
-				
 				if(dataCel===0)
 					MAP.refArray[y][x].css({"background-color":""});
-				else
+				else{
 					MAP.refArray[y][x].css({"background-color":PLAYERS.GetColorRGB(dataCel)});
+				}
 			}
 		}
 		

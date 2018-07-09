@@ -32,7 +32,7 @@ class Map_model extends F_Model {
        
         for($i=0; $i<$this->mapWidth; $i++)
             for($j=0; $j<$this->mapHeight; $j++)
-                $query[]="INSERT INTO ".$this->table."   (x, y, tile) VALUES ($i, $j, 1);";
+                $query[]="INSERT INTO ".$this->table."   (x, y, tile) VALUES ($i, $j, 0);";
            
         $this->afterInstallQuery = $query;
     }

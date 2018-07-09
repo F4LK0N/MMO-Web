@@ -7,7 +7,7 @@ header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Credentials: true');
 
 //CONTENT
-header("Content-type: application/json; charset=utf-8");
+//TODO://header("Content-type: application/json; charset=utf-8");
 
 
 

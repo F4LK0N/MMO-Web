@@ -5,7 +5,7 @@ class Users_model extends F_Model {
 	//DB
 	protected $table = "users";
 	protected $fields = array(
-		"id_session" => DBF_TEXT,       //The session identifier.
+        "token"      => DBF_TEXT,       //The session identifier.
 		"nick"       => DBF_TEXT255,    //User nick in the game.
 		"x"          => DBF_INT,
 		"y"          => DBF_INT,
@@ -16,8 +16,9 @@ class Users_model extends F_Model {
 	);
 	
 	//SESSION
-	// private $sessionDuration = 5;
-	private $sessionDuration = 1000000000000;
+	// private $sessionDuration = 15;
+	private $sessionDuration = 60;
+	private $token = "";
 	
 	//SESSION EXTERNAL
 	private $ip     = "";
@@ -67,25 +68,34 @@ class Users_model extends F_Model {
 		//EXTERNAL
 		$this->ip    = $_SERVER['HTTP_HOST'];
 		$this->agent = $_SERVER['HTTP_USER_AGENT'];
-		
-		//DATA
-		$query = $this->f_db->query("SELECT *   FROM `".$this->table."`   WHERE (t_last>".($this->GetTime($this->sessionDuration)).") AND (id_session='".$this->ip."@".$this->agent."'); ");
-		if(count($query)){
-			$query=$query[0];
-			
-			//Get Data
-			$this->logged  = true;
-			$this->id      = $query->id;
-			$this->nick    = $query->nick;
-			$this->t_last  = $query->t_last;
-			$this->t_walk  = $query->t_walk;
-			$this->t_shoot = $query->t_shoot;
-			$this->position['x'] = $query->x;
-			$this->position['y'] = $query->y;
-			
-			//UpdateRequest Last
-			$this->db->query("UPDATE `".$this->table."`   SET `t_last` =".$this->GetTime()."   WHERE (id='".$this->id."'); ");
-		}
+
+
+
+        //DATA
+        if(isset($_SERVER['HTTP_AUTHTOKEN'])){
+
+            $this->token =$_SERVER['HTTP_AUTHTOKEN'];
+
+            $query = $this->f_db->query("SELECT *   FROM `".$this->table."`   WHERE (t_last>".($this->GetTime($this->sessionDuration)).") AND (token='".$this->token."'); ");
+            if(count($query)){
+                $query=$query[0];
+
+                //Get Data
+                $this->logged  = true;
+                $this->id      = $query->id;
+                $this->nick    = $query->nick;
+                $this->t_last  = $query->t_last;
+                $this->t_walk  = $query->t_walk;
+                $this->t_shoot = $query->t_shoot;
+                $this->position['x'] = $query->x;
+                $this->position['y'] = $query->y;
+
+                //UpdateRequest Last
+                $this->db->query("UPDATE `".$this->table."`   SET `t_last` =".$this->GetTime()."   WHERE (id='".$this->id."'); ");
+            }
+
+        }
+
 	}
 	
 	public function GetTime($difference=0)
@@ -101,14 +111,17 @@ class Users_model extends F_Model {
 	public function Login($nick)
 	{
 		//CLEAR
-		$this->Logout();
-		
+		//$this->Logout();
+
+
+        //TOKEN
+        $token = md5($this->ip."@".$this->agent."@".microtime(true));
 		
 		//LOGIN
 		$this->db->insert(
 			$this->table,
 			array(
-				'id_session' => $this->ip."@".$this->agent,
+				'token'      => $token,
 				'nick'       => $nick,
 				'x'          => 25,
 				'y'          => 25,
@@ -118,36 +131,40 @@ class Users_model extends F_Model {
 				't_shoot'    => $this->GetTime(),
 			)
 		);
-		
+
+        return $token;
 	}
 	
 	public function Logout()
 	{
-		$this->db->delete($this->table, array('id_session' => $this->ip."@".$this->agent));
+		//$this->db->delete($this->table, array('id_session' => $this->ip."@".$this->agent));
 	}
 	
 	
 	
 	public function Update()
 	{
-		$view['left']  = $this->users_model->Position()['x'] + $this->users_model->FOV();
-		$view['right'] = $this->users_model->Position()['x'] - $this->users_model->FOV();
-		$view['top']   = $this->users_model->Position()['y'] - $this->users_model->FOV();
-		$view['bottom']= $this->users_model->Position()['y'] + $this->users_model->FOV();
+		$view['left']  = $this->users_model->Position()['x'] - $this->users_model->FOV();
+		$view['right'] = $this->users_model->Position()['x'] + $this->users_model->FOV();
+		$view['top']   = $this->users_model->Position()['y'] + $this->users_model->FOV();
+		$view['bottom']= $this->users_model->Position()['y'] - $this->users_model->FOV();
 		$width=$this->users_model->FOV()*2+1;
 		
-		$query = "SELECT id,x,y,nick   FROM ".$this->table."   WHERE x>=".$view['left']." AND (t_last>".($this->GetTime($this->sessionDuration)).") AND x<=".$view['right']." AND y<=".$view['top']." AND y>=".$view['bottom']."   ORDER BY y ASC, x ASC; ";
+		$query = "SELECT id,x,y,nick   FROM ".$this->table."   WHERE (t_last>".($this->GetTime($this->sessionDuration)).") AND x>=".$view['left']." AND x<=".$view['right']." AND y<=".$view['top']." AND y>=".$view['bottom']."   ORDER BY y ASC, x ASC; ";
 		$query = $this->f_db->Query($query);
-		
+
 		
 		
 		$json=
 		',"Players":{';
-			foreach($query as $player){
-				$json.= '"'.$player->id.'":{"nick":"'.$player->nick.'","x":'.$player->x.',"y":'.$player->y.'},';
-			}
-		$json=substr($json, 0, -1)."}";
-		print"$json";
+
+		    if(count($query)) {
+                foreach ($query as $player) {
+                    $json .= '"' . $player->id . '":{"nick":"' . $player->nick . '","x":' . $player->x . ',"y":' . $player->y . '},';
+                }
+                $json = substr($json, 0, -1);
+            }
+		print"$json}";
 	}
 
 	public function Walk($direction)
@@ -170,7 +187,7 @@ class Users_model extends F_Model {
 		
 		//UPDATE
 		$this->db->query("UPDATE `".$this->table."`   SET `x`=".$this->position['x'].", `y`=".$this->position['y'].", `t_walk` =".$this->GetTime()."   WHERE (id='".$this->id."'); ");
-                $this->db->query("UPDATE `map`   SET `tile` = ".$this->id."   WHERE (`x`=".$this->position['x'].") AND (`y`=".$this->position['y']."); ");
+        $this->db->query("UPDATE `map`   SET `tile` = ".$this->id."   WHERE (`x`=".$this->position['x'].") AND (`y`=".$this->position['y']."); ");
 	}
 	
 }

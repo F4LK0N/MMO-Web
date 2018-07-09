@@ -2,6 +2,7 @@
   <dictionary name="otavi_000">
     <words>
       <w>addr</w>
+      <w>authtoken</w>
       <w>cooldown</w>
       <w>keydown</w>
       <w>onload</w>

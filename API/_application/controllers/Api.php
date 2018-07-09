@@ -31,14 +31,16 @@ class API extends CI_Controller {
 		//ACCESS
 		if($nick){
 			$this->load->model('users_model');
-			$this->users_model->Login($nick);
+			$token = $this->users_model->Login($nick);
 			
 			print
 			'{'.
 				'"API":'.'{'.'"v":'.API::$version.'},'.
-				'"User":"LOGGED"'.
+				'"User":{'.
+                    '"Token":"'.$token.'"'.
+                '}'.
 			'}';
-			die;
+			return;
 		}
 		
 		

@@ -15,13 +15,21 @@ class Action_model extends F_Model {
 	
 	public function Walk($action)
 	{
-		$interval = $this->users_model->walkInterval;
+		$interval = $this->users_model->walkInterval * 10;
 		$last     = $this->users_model->t_walk;
 		
 		
 		//Action - Cooldown
+        var_dump($last);
+        var_dump($interval);
+        var_dump($last+$interval);
+        var_dump($this->users_model->GetTime());
 		if($last+$interval > $this->users_model->GetTime())
 			return;
+
+
+		var_dump("allowed");
+//		die;
 		//Action - Allowed
 		$this->load->model('map_model');
 		

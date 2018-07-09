@@ -474,7 +474,7 @@ var PLAYERS = {
 //###############
 var ACTIONS = {
 	
-	cooldown: 500,
+	cooldown: 50,
 	lastAction: 0,
 	
 	actionsList: {},

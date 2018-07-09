@@ -37,7 +37,7 @@ class Users_model extends F_Model {
 	private $fov = 5;
 	public function FOV(){ return $this->fov; }
 	
-	public $walkInterval  =  500;//ms
+	public $walkInterval  =  160;//ms
 	public $shootInterval = 1000;//ms
 	
 	//POSITION

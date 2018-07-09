@@ -57,7 +57,13 @@ class F_DB {
 		
 		return "<!--ERROR--!>";
 	}
-	
+
+    public function TableDrop($table)
+    {
+        $this->CI->db->query("DROP TABLE ".$table);
+    }
+
+
 	public function TableCreate($table, $fields)
 	{
 		//CREATE

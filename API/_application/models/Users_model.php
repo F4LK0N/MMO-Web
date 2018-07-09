@@ -74,7 +74,7 @@ class Users_model extends F_Model {
         //DATA
         if(isset($_SERVER['HTTP_AUTHTOKEN'])){
 
-            $this->token =$_SERVER['HTTP_AUTHTOKEN'];
+            $this->token = $_SERVER['HTTP_AUTHTOKEN'];
 
             $query = $this->f_db->query("SELECT *   FROM `".$this->table."`   WHERE (t_last>".($this->GetTime($this->sessionDuration)).") AND (token='".$this->token."'); ");
             if(count($query)){

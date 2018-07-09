@@ -31,7 +31,7 @@ var USER = {
 //###########
 var API = {
 	URL: "",
-	URL_ONLINE: "",
+	URL_ONLINE: "http://mmo.web7031.uni5.net/API/API/",
 	URL_OFFLINE: "http://127.0.0.1/MMO/API/API/",
 	
 	Init: function(){

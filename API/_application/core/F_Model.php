@@ -42,6 +42,9 @@ class F_Model extends CI_Model {
 		": DB Install";
 		
 		
+        //Clear
+        $this->f_db->TableDrop($this->table);
+
 		//Before
 		$this->InstallQueries($this->beforeInstallQuery);
 		//Run

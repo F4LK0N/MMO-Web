@@ -3,7 +3,7 @@
 //### HTTP HEADERS ###
 //####################
 
-//Encoding
+//Content Encoding
 header("Content-Type: text/html; charset=utf-8");
 
 //Cross Origin (Allowed)

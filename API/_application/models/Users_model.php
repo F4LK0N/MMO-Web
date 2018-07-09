@@ -136,15 +136,15 @@ class Users_model extends F_Model {
 		$view['bottom']= $this->users_model->Position()['y'] - $this->users_model->FOV();
 		$width=$this->users_model->FOV()*2+1;
 		
-		$query = "SELECT id,x,y   FROM ".$this->table."   WHERE x>=".$view['left']." AND (t_last>".($this->GetTime($this->sessionDuration)).") AND x<=".$view['right']." AND y<=".$view['top']." AND y>=".$view['bottom']."   ORDER BY y ASC, x ASC; ";
+		$query = "SELECT id,x,y,nick   FROM ".$this->table."   WHERE x>=".$view['left']." AND (t_last>".($this->GetTime($this->sessionDuration)).") AND x<=".$view['right']." AND y<=".$view['top']." AND y>=".$view['bottom']."   ORDER BY y ASC, x ASC; ";
 		$query = $this->f_db->Query($query);
 		
 		
 		
 		$json=
-		',"players":{';
+		',"Players":{';
 			foreach($query as $player){
-				$json.= '"'.$player->id.'":{"x":'.$player->x.',"y":'.$player->y.'},';
+				$json.= '"'.$player->id.'":{"nick":"'.$player->nick.'","x":'.$player->x.',"y":'.$player->y.'},';
 			}
 		$json=substr($json, 0, -1)."}";
 		print"$json";

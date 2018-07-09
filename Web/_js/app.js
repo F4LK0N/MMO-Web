@@ -3,7 +3,21 @@
 //############
 var USER = {
 	nick: "",
-	color: "",
+	
+	fov: 5,
+	
+	x: 0,
+	y: 0,
+	offsetX: 0,
+	offsetY: 0,
+	
+	Update: function(data){
+		USER.x = data.x;
+		USER.y = data.y;
+		
+		USER.offsetX = USER.x - USER.fov;
+		USER.offsetY = USER.y - USER.fov;
+	}
 };
 
 
@@ -57,7 +71,7 @@ var API = {
 		
 		//CONNECT
 		$.ajax({
-			url: this.URL + url,
+			url: this.URL + url + "?time=" + Date.now(),
 			method: 'GET',
 			timeout: 500,
 			success: function (data) {
@@ -90,7 +104,7 @@ var API = {
 		
 		//CONNECT
 		$.ajax({
-			url: this.URL+url,
+			url: this.URL + url + "?time=" + Date.now(),
 			method: 'POST',
 			dataType: 'json',
 			data: data,
@@ -185,7 +199,8 @@ var GAME = {
 	
 	running: false,
 	callerID: 0,
-	updateInterval: 250,
+	// updateInterval: 250,
+	updateInterval: 10000,
 	lastUpdate: 0,
 	skipedPackages: 0,
 	skipedPackagesTimeout: 20,
@@ -205,6 +220,7 @@ var GAME = {
 			window.onresize = GAME.PositionElements;
 		
 		$("#game").show();
+		GAME.UpdateRequest();
 	},
 	
 	End: function(){
@@ -251,11 +267,11 @@ var GAME = {
 	Update: function(response){
 		
 		//ERROR
-		if(!response || !('User' in response))
+		if(!response)
 			return;
 		
 		//SESSION EXPIRE
-		if(response.User===0){
+		if('User' in response && response.User===0){
 			GAME.End();
 			alert("Sessão expirada");
 			return;
@@ -277,6 +293,10 @@ var GAME = {
 		GAME.lastUpdate = response.Time;
 		GAME.skipedPackages = 0;
 		
+		//USER
+		if('User' in response)
+			USER.Update(response.User);
+		
 		//MAP
 		if('Map' in response)
 			MAP.Update(response.Map);
@@ -297,18 +317,20 @@ var GAME = {
 var MAP = {
 	
 	refArray: null,
+	tilesX: 11,
+	tilesY: 11,
 	
 	Init: function(){
 		let $table = $("#map");
 		$table.empty();
 		
 		MAP.refArray = [];
-		for(let y=0; y<11; y++){
+		for(let y=0; y<MAP.tilesY; y++){
 			MAP.refArray[y] = [];
 			let tableRow = $("<tr>");
 			$table.append(tableRow);
 			
-			for(let x=0; x<11; x++){
+			for(let x=0; x<MAP.tilesX; x++){
 				MAP.refArray[y][x] = $("<td>");
 				tableRow.append(MAP.refArray[y][x]);
 			}
@@ -316,7 +338,21 @@ var MAP = {
 	},
 	
 	Update(data){
-		console.log(data);
+		
+		for(let y=0; y<MAP.tilesY; y++){
+			
+			let dataRow = data[0];
+			for(let x=0; x<MAP.tilesX; x++){
+				
+				let dataCel = dataRow[x];
+				
+				if(dataCel===0)
+					MAP.refArray[y][x].css({"background-color":""});
+				else
+					MAP.refArray[y][x].css({"background-color":PLAYERS.GetColorRGB(dataCel)});
+			}
+		}
+		
 	},
 
 };
@@ -334,17 +370,67 @@ var PLAYERS = {
 		let $table = $("#players");
 		$table.empty();
 		
-		MAP.refArray = [];
+		PLAYERS.refArray = [];
 		for(let y=0; y<11; y++){
-			MAP.refArray[y] = [];
+			PLAYERS.refArray[y] = [];
 			let tableRow = $("<tr>");
 			$table.append(tableRow);
 			
 			for(let x=0; x<11; x++){
-				MAP.refArray[y][x] = $("<td>");
-				tableRow.append(MAP.refArray[y][x]);
+				PLAYERS.refArray[y][x] = $("<td>");
+				tableRow.append(PLAYERS.refArray[y][x]);
 			}
 		}
+	},
+	
+	Update(data){
+		
+		for(let y=0; y<11; y++){
+			for(let x=0; x<11; x++){
+				PLAYERS.refArray[y][x].empty();
+			}
+		}
+		
+		$.each(data, function(id, player) {
+			PLAYERS.refArray[(player.y-USER.offsetY)][(player.x-USER.offsetX)].html(PLAYERS.GetPlayer(id, player.nick));
+		});
+		
+	},
+	
+	GetPlayer: function(id, nick){
+		let color = PLAYERS.GetColor(id);
+		return '<div style="background-color:rgb('+(color.r+30)+', '+(color.g+30)+', '+(color.b+30)+')">' +
+					'<div style="background-color:rgb('+(color.r-30)+', '+(color.g-30)+', '+(color.b-30)+')">' +
+						'<div style="background-color:rgb('+(color.r+30)+', '+(color.g+30)+', '+(color.b+30)+')">' +
+							'<p>'+nick+'</p>'+
+						'</div>' +
+					'</div>' +
+				'</div>';
+	},
+	
+	
+	
+	//### COLORS ###
+	colorsArray: {},
+	GetColor: function(id){
+	
+		//CACHE
+		if(id in PLAYERS.colorsArray)
+			return PLAYERS.colorsArray[id];
+		
+		//CREATE
+		let color = {
+			r: (Math.floor(Math.random() * 150) + 50),
+			g: (Math.floor(Math.random() * 150) + 50),
+			b: (Math.floor(Math.random() * 150) + 50),
+		};
+		
+		PLAYERS.colorsArray[id] = color;
+		return color;
+	},
+	GetColorRGB: function(id){
+		let color = PLAYERS.GetColor(id);
+		return "rgb("+ color.r +","+ color.g +", "+ color.b +")";
 	},
 	
 };

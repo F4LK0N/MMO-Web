@@ -10,13 +10,23 @@ html, body { margin:0; padding:0; background-color:#FFFFFF; position:absolute; t
 
 
 /* GAME */
-#game { background-color:rgba(1,1,1, 0.75); position:absolute; top:0; bottom:0; left:0; right:0; text-align:center; z-index:100; }
-#game table { border:2px solid #777;  position:absolute; top:0; left:0; }
-#game table { width:550px; height:550px; border-collapse:collapse; display:inline-block; }
-#game table td { width:50px; height:50px; }
+#game { background-color:rgba(0,0,0, 0.75); position:absolute; top:0; bottom:0; left:0; right:0; text-align:center; z-index:100; }
+#game table { position:absolute; top:0; left:0; width:550px; height:550px; border-collapse:collapse; display:inline-block; }
+#game table tr { margin:0; padding:0; border:1px solid rgba(0,0,0,0.1); border-left:3px solid rgba(0,0,0,0.5); border-right:3px solid rgba(0,0,0,0.5); }
+#game table tr:first-child { border-top:3px solid rgba(0,0,0,0.5); }
+#game table tr:last-child { border-bottom:3px solid rgba(0,0,0,0.5); }
+#game table td { margin:0; padding:0; width:50px; height:50px; border-left:1px solid rgba(0,0,0,0.1); }
+#game table td:first-child { border-left:0; }
 
 #game table#map { z-index:101; }
-#game table#map td { border:2px solid red; background-color:#FFF; }
+#game table#map td { background-color:#FFF; }
 
-#game table#players { border:2px solid green; }
 #game table#players { z-index:102; }
+#game table#players td { background-color:transparent; text-align:center; }
+#game table#players div { display:inline-block; border-radius:100%; margin:0; padding:0; overflow-y:visible; overflow-x:visible; }
+#game table#players td > div { width:47px; height:47px; margin-top:1px; }
+#game table#players td > div > div { width:41px; height:41px; margin-top:3px; }
+#game table#players td > div > div > div { width:35px; height:35px; margin-top:3px; }
+#game table#players td p { position:relative; top:-25px; margin:0; padding:0; }
+
+#game div#overlay { position:absolute; top:0; bottom:0; left:0; right:0; z-index:199; }

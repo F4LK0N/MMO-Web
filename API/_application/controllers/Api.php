@@ -90,7 +90,11 @@ class API extends CI_Controller {
 		'{'.
 //			'"API":'.'{'.'"v":'.API::$version.'},'.
 //			'"User":'.($this->users_model->id)','.
-            '"Time":'.(microtime(true)*10000);
+            '"Time":'.(microtime(true)*10000).','.
+		    '"User":{'.
+                '"x":'.$this->users_model->Position()['x'].','.
+                '"y":'.$this->users_model->Position()['y'].
+            '}';
 
 			//MAP
 			$this->load->model('map_model');
